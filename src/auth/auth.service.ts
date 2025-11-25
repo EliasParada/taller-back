@@ -103,6 +103,8 @@ export class AuthService {
         email,
       });
 
+      console.log({email, password, psd: user.password, user});
+
       const authenticated = await compare(password, user.password);
 
       if (!authenticated) {

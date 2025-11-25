@@ -1,0 +1,63 @@
+name: Deploy - Backend
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # ----------------------
+      # CI/CD: Build and push image
+      # ----------------------
+
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Setup Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DO_API_TOKEN }}
+
+      - name: Login to DOCR
+        run: doctl registry login
+
+      - name: Build & push image
+        env:
+          REG: ${{ secrets.REGISTRY_NAME }}
+          IMG: ${{ secrets.IMAGE_NAME }}
+        run: |
+          TAG=$(echo $GITHUB_SHA | head -c7)
+          echo "TAG=$TAG"
+          docker build -t $REG/$IMG:$TAG .
+          docker push $REG/$IMG:$TAG
+          docker tag $REG/$IMG:$TAG $REG/$IMG:latest
+          docker push $REG/$IMG:latest
+
+      # ----------------------
+      # CD: Deploy via SSH
+      # ----------------------
+
+      - name: Deploy to droplet
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.DROPLET_IP }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd /home/${{ secrets.DEPLOY_USER }}/apps/backend
+            TAG=$(echo $GITHUB_SHA | head -c7)
+            export TAG=$TAG
+
+            docker pull ${{ secrets.REGISTRY_NAME }}/${{ secrets.IMAGE_NAME }}:$TAG
+            docker compose pull
+            docker compose up -d --remove-orphans
+            docker image prune -af
+            docker builder prune -af

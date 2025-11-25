@@ -53,6 +53,7 @@ export class ProductoController {
 
   @Get()
   findAll() {
+    console.log("AAAAA");
     return this.productoService.findAll();
   }
 

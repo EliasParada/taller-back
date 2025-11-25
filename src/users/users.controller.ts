@@ -19,6 +19,7 @@ export class UsersController {
   async getUsers(
     @CurrentUser() user: User
   ) {
+    console.log(">>>> Controller de user");
     return this.usersService.getUsers()
   }
 
@@ -27,6 +28,7 @@ export class UsersController {
   async getMe(
     @CurrentUser() user: User
   ) {
+    console.log(">>>> Controller de user me");
     const { password, refreshToken, ...safeUser } = user;
     return safeUser;
   }

@@ -17,6 +17,9 @@ export class AuthController {
     @CurrentUser() user: User,
     @Res({ passthrough: true }) response: Response,
   ) {
+    console.log('>>> Entró a login controller');
+    console.log('>>> Body recibido:', response);
+    console.log('>>> Usuario del guard:', user);
     await this.authService.login(user, response);
   }
 
@@ -36,6 +39,7 @@ export class AuthController {
 
   @Post('reset-password')
   async resetPassword(@Body() dto: ResetPasswordDto) {
+    console.log('>>> Entró a reset-password controller');
     return this.authService.resetPassword(dto.token, dto.newPassword);
   }
 }

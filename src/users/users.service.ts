@@ -30,6 +30,7 @@ export class UsersService {
   }
 
   async getUsers() {
+    console.log("USERS");
     return this.userModel.find({});
   }
 
