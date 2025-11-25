@@ -53,6 +53,9 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
+            doctl auth init -t ${{ secrets.DO_API_TOKEN }}
+            doctl registry login
+            
             cd /home/${{ secrets.DEPLOY_USER }}/apps/backend
             TAG=$(echo $GITHUB_SHA | head -c7)
             export TAG=$TAG
