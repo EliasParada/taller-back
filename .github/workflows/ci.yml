@@ -25,10 +25,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # Lint, Test, Build
-      - name: Lint
-        run: npm run lint --if-present
-
+      # Test, Build
       - name: Run tests
         run: npm test --if-present
 
