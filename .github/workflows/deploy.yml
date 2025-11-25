@@ -27,7 +27,7 @@ jobs:
           token: ${{ secrets.DO_API_TOKEN }}
 
       - name: Login to DOCR
-        run: doctl registry login
+        run: doctl registry login --expiry-seconds 1200
 
       - name: Build & push image
         env:
@@ -36,7 +36,7 @@ jobs:
         run: |
           TAG=$(echo $GITHUB_SHA | head -c7)
           echo "TAG=$TAG"
-          docker build -t $REG/$IMG:$TAG .
+          docker build -f Dockerfile -t $REG/$IMG:$TAG .
           docker push $REG/$IMG:$TAG
           docker tag $REG/$IMG:$TAG $REG/$IMG:latest
           docker push $REG/$IMG:latest
