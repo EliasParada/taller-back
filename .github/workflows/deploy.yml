@@ -51,6 +51,7 @@ jobs:
           host: ${{ secrets.DROPLET_IP }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
             cd /home/${{ secrets.DEPLOY_USER }}/apps/backend
             TAG=$(echo $GITHUB_SHA | head -c7)
