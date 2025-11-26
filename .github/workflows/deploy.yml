@@ -58,7 +58,7 @@ jobs:
             export TAG=$TAG
 
             echo "${{ secrets.DO_API_TOKEN }}" | docker login -u docker --password-stdin registry.digitalocean.com
-            docker pull ${{ secrets.REGISTRY_NAME }}/${{ secrets.IMAGE_NAME }}:$TAG
+            docker pull ${{ secrets.REGISTRY_NAME }}/${{ secrets.IMAGE_NAME }}:latest
             docker compose pull
             docker compose up -d --remove-orphans
             docker image prune -af
