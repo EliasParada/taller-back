@@ -27,7 +27,7 @@ jobs:
           token: ${{ secrets.DO_API_TOKEN }}
 
       - name: Login to DOCR
-        run: echo "${{ secrets.DO_API_TOKEN }}" | docker login -u docker --password-stdin registry.digitalocean.com
+        run: doctl registry login --expiry-seconds 1200
 
       - name: Build & push image
         env:
@@ -57,6 +57,7 @@ jobs:
             TAG=$(echo $GITHUB_SHA | head -c7)
             export TAG=$TAG
 
+            echo "${{ secrets.DO_API_TOKEN }}" | docker login -u docker --password-stdin registry.digitalocean.com
             docker pull ${{ secrets.REGISTRY_NAME }}/${{ secrets.IMAGE_NAME }}:$TAG
             docker compose pull
             docker compose up -d --remove-orphans
