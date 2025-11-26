@@ -27,7 +27,7 @@ jobs:
           token: ${{ secrets.DO_API_TOKEN }}
 
       - name: Login to DOCR
-        run: doctl registry login --expiry-seconds 180
+        run: echo "${{ secrets.DO_API_TOKEN }}" | docker login -u docker --password-stdin registry.digitalocean.com
 
       - name: Build & push image
         env:
